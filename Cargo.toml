@@ -1,0 +1,20 @@
+[package]
+name = "mama"
+version = "0.1.0"
+authors = ["Teemu Tervo <teemu.tervo iki.fi>"]
+description = "A command line application for managing todo.txt"
+keywords = ["todo", "todotxt"]
+categories = ["command-line-utilities"]
+readme = "README.md"
+license-file = "COPYING"
+repository = "https://github.com/teervo/mama/"
+edition = "2018"
+
+[dependencies]
+colored = "2.0.0"
+gregorian = "0.2.1"
+dirs = "3.0.2"
+strum = "0.21.0"
+strum_macros = "0.21.1"
+terminal_size = "0.1.17"
+
