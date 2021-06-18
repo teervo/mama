@@ -5,6 +5,7 @@ use crate::TodoFile;
 
 use colored::*;
 use gregorian::Date;
+use iterate::iterate;
 use std::cmp::max;
 use terminal_size::{terminal_size, Width};
 
@@ -95,16 +96,13 @@ fn format_date(date: Option<Date>) -> String {
 }
 
 fn format_description(description: &str, available_width: usize) -> String {
-    let tail = match description.len() > available_width {
-        true => ['…'].iter(),
-        false => [].iter(),
+    // If necessary, truncate desciption to fit terminal width
+    let description: String = match description.len() > available_width {
+        true => iterate![..description.chars().take(available_width - 1), '…'].collect(),
+        false => description.to_string(),
     };
 
     description
-        .chars()
-        .take(available_width - 1)
-        .chain(tail.cloned())
-        .collect::<String>()
         .split_whitespace()
         // choose coloring based on first character
         .map(|word| match word.chars().next() {

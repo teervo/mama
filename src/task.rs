@@ -1,4 +1,5 @@
 use gregorian::Date;
+use iterate::iterate;
 
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct Task {
@@ -54,8 +55,8 @@ impl std::str::FromStr for Task {
     // Using regular expressions might make this a lot cleaner,
     // but it would also increase the binary size by a couple of MB
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut iter = s.split_whitespace();
-        let mut cur = iter.next();
+        let mut tokens = s.split_whitespace();
+        let mut cur = tokens.next();
 
         if cur.is_none() {
             return Err(TaskParsingError::EmptyLine);
@@ -64,7 +65,7 @@ impl std::str::FromStr for Task {
         // First token is optional and marks task completion
         let completed = match cur {
             Some("x") => {
-                cur = iter.next();
+                cur = tokens.next();
                 true
             }
             _ => false,
@@ -74,7 +75,7 @@ impl std::str::FromStr for Task {
         // is a single uppercase ASCII character enclosed in parentheses
         let priority = match cur.unwrap_or("").parse::<crate::TaskPriority>() {
             Ok(priority) => {
-                cur = iter.next();
+                cur = tokens.next();
                 Some(priority)
             }
             _ => None,
@@ -86,14 +87,14 @@ impl std::str::FromStr for Task {
         // date, in that order.
         let mut creation_date = match cur.unwrap_or("").parse::<Date>() {
             Ok(dt) => {
-                cur = iter.next();
+                cur = tokens.next();
                 Some(dt)
             }
             _ => None,
         };
         let completion_date = match cur.unwrap_or("").parse::<Date>() {
             Ok(dt) => {
-                cur = iter.next();
+                cur = tokens.next();
                 let tmp = creation_date;
                 creation_date = Some(dt);
                 tmp
@@ -102,8 +103,7 @@ impl std::str::FromStr for Task {
         };
 
         // remainder is the description:
-        let description = std::iter::once(cur.unwrap())
-            .chain(iter)
+        let description = iterate![cur.unwrap(), ..tokens]
             .map(std::string::ToString::to_string)
             .collect::<Vec<String>>()
             .join(" ");

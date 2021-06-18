@@ -12,8 +12,9 @@ edition = "2018"
 
 [dependencies]
 colored = "2.0.0"
-gregorian = "0.2.1"
 dirs = "3.0.2"
+gregorian = "0.2.1"
+iterate = "1.0.0"
 strum = "0.21.0"
 strum_macros = "0.21.1"
 terminal_size = "0.1.17"
