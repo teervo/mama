@@ -7,6 +7,7 @@ use colored::*;
 use gregorian::Date;
 use iterate::iterate;
 use std::cmp::max;
+use std::io::{self, Write};
 use terminal_size::{terminal_size, Width};
 
 pub fn description() -> &'static str {
@@ -84,10 +85,10 @@ fn print_task(id: &TaskId, task: &Task, detailed_output: bool, id_column_width: 
 
     output.push_str(&format_description(&task.description, description_width));
 
-    if task.completed {
-        println!("{}", output.strikethrough())
+    _ = if task.completed {
+        writeln!(io::stdout(), "{}", output.strikethrough())
     } else {
-        println!("{}", output)
+        writeln!(io::stdout(), "{}", output)
     }
 }
 
